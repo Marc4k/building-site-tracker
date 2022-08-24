@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:building_site_tracker/domain/user_authentication/user_authentication_impl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -63,21 +64,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text("stop")),
             ElevatedButton(
                 onPressed: () async {
-                  dynamic user =
-                      await FirebaseAuth.instance.signInAnonymously();
-                },
-                child: Text("Sign In")),
-            ElevatedButton(
-                onPressed: () async {
                   final FirebaseAuth auth = FirebaseAuth.instance;
                   final User? user = auth.currentUser;
                   final uid = user!.uid;
 
-                  setState(() {
-                    text = uid;
-                  });
+                  print(uid);
                 },
-                child: Text("Test"))
+                child: Text("userID")),
+            ElevatedButton(
+                onPressed: () async {
+                  UserAuthenticationImpl().signOutUser();
+                },
+                child: Text("LogOut"))
           ],
         ),
       ),
