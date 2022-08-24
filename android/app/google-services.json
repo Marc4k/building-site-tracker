@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "98374568005",
+    "project_id": "tracker-c59d0",
+    "storage_bucket": "tracker-c59d0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:98374568005:android:4aca6c25238ff4df457b2c",
+        "android_client_info": {
+          "package_name": "io.marcplace.tracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "98374568005-3qka1rc7l1rhdq4g5213gd7j3t341lnt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAj7JiJ10SbkmNT0d1XF-H4rt99vCc3fw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "98374568005-3qka1rc7l1rhdq4g5213gd7j3t341lnt.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "98374568005-9bc5atf5fbvtr89vr5su67icdb5c7jh5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.marcplace.tracker"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
