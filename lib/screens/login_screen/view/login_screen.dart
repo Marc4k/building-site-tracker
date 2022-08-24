@@ -1,6 +1,8 @@
 // ignore_for_file: deprecated_member_use
 
+import 'package:building_site_tracker/cubit/get_building_site_data_cubit.dart';
 import 'package:building_site_tracker/cubit/get_names_data_cubit.dart';
+import 'package:building_site_tracker/screens/building_sites/view/building_site_screen.dart';
 import 'package:building_site_tracker/screens/homescreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash/flash.dart';
@@ -55,10 +57,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) =>
                                         MultiBlocProvider(providers: [
-                                          BlocProvider<GetNamesDataCubit>(
+                                          BlocProvider<
+                                                  GetBuildingSiteDataCubit>(
                                               create: (BuildContext context) =>
-                                                  GetNamesDataCubit())
-                                        ], child: HomeScreen())));
+                                                  GetBuildingSiteDataCubit()
+                                                    ..getNames())
+                                        ], child: BuildingSiteScreen())));
                               }, (failure) {});
                             },
                             child: Text(names[index]));
