@@ -1,5 +1,8 @@
 import 'package:building_site_tracker/cubit/get_building_site_data_cubit.dart';
+import 'package:building_site_tracker/cubit/get_current_time_cubit%20copy.dart';
+import 'package:building_site_tracker/cubit/newTestCubit.dart';
 import 'package:building_site_tracker/domain/building_site/building_site_impl.dart';
+import 'package:building_site_tracker/screens/time_tracker_site/view/time_tracker_site.dart';
 import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,13 +37,20 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
                       return ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) =>
-                                    MultiBlocProvider(providers: [
-                                      BlocProvider<GetBuildingSiteDataCubit>(
-                                          create: (BuildContext context) =>
-                                              GetBuildingSiteDataCubit()
-                                                ..getNames())
-                                    ], child: BuildingSiteScreen())));
+                                builder: (context) => MultiBlocProvider(
+                                        providers: [
+                                          BlocProvider<GetCurrentTimeCubit>(
+                                              create: (BuildContext context) =>
+                                                  GetCurrentTimeCubit(
+                                                      names[index])
+                                                    ..getTime()),
+                                          BlocProvider<NewTestCubit>(
+                                              create: (BuildContext context) =>
+                                                  NewTestCubit())
+                                        ],
+                                        child: TimeTrackerSite(
+                                          name: names[index],
+                                        ))));
                           },
                           child: Text(names[index]));
                     }
