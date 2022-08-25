@@ -3,16 +3,11 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:building_site_tracker/domain/user_authentication/user_authentication_impl.dart';
 
-class NewTestCubit extends Cubit<Duration> {
-  NewTestCubit() : super(Duration(seconds: 0));
+import '../domain/time_tracker/time_tracker_impl.dart';
+
+class TimerCubit extends Cubit<Duration> {
+  TimerCubit() : super(Duration(seconds: 1));
   Timer? timer;
-
-  void addSecond() {
-    final seconds = state.inSeconds + 1;
-    Duration duration = Duration(seconds: seconds);
-
-    emit(duration);
-  }
 
   void setTimer(Duration newDuration) {
     Duration duration = newDuration;
@@ -21,15 +16,27 @@ class NewTestCubit extends Cubit<Duration> {
   }
 
   void startTimer() {
+    Duration duration = Duration();
     timer = Timer.periodic(Duration(seconds: 1), (_) {
       final seconds = state.inSeconds + 1;
-      Duration duration = Duration(seconds: seconds);
+      duration = Duration(seconds: seconds);
+
       emit(duration);
     });
   }
 
   void stopTimer() {
     timer?.cancel();
+  }
+
+  Future<void> getCurrentTimeC(String name) async {
+    Duration newDuration = await TimeTrackerImpl().getCurrentTime(name: name);
+
+    if (newDuration.inSeconds != 0 && newDuration.inDays != 99) {
+      startTimer();
+    }
+
+    emit(newDuration);
   }
 
   @override

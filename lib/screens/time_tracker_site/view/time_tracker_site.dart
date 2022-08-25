@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:building_site_tracker/cubit/get_current_time_cubit%20copy.dart';
-import 'package:building_site_tracker/cubit/newTestCubit.dart';
+import 'package:building_site_tracker/cubit/timer_cubit.dart';
 import 'package:building_site_tracker/domain/time_tracker/time_tracker_impl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,75 +20,56 @@ bool startBlur = false;
 bool stopBlur = true;
 
 class _TimeTrackerSiteState extends State<TimeTrackerSite> {
-  Duration duration = Duration();
-  Timer? timer;
-
-  void addTime() {
-    setState(() {
-      final seconds = duration.inSeconds + 1;
-      duration = Duration(seconds: seconds);
-    });
-  }
-
-  void setnewTime(Duration newDuration) {
-    setState(() {
-      duration = newDuration;
-    });
-    startTimer();
-  }
-
-  void startTimer() {
-    timer = Timer.periodic(Duration(seconds: 1), (_) => addTime());
-  }
-
   @override
   Widget build(BuildContext context) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final hours = twoDigits(duration.inHours);
-    final minutes = twoDigits(duration.inMinutes.remainder(60));
-    final seconds = twoDigits(duration.inSeconds.remainder(60));
-
     return LoaderOverlay(
       child: Scaffold(
         body: SafeArea(
             child: Column(
           children: [
             Text(widget.name),
-            ElevatedButton(
-                onPressed: () async {
-                  startTimer();
-                  await TimeTrackerImpl().startTimer(name: widget.name);
-                },
-                child: Text("start")),
-            ElevatedButton(
-                onPressed: () async {
-                  timer?.cancel();
-                  await TimeTrackerImpl().stopTimer(name: widget.name);
-                },
-                child: Text("stop")),
-            BlocBuilder<NewTestCubit, Duration>(
+            BlocBuilder<TimerCubit, Duration>(
               builder: (context, time) {
-                return Text(time.inSeconds.toString());
+                if (time.inDays == 99) {
+                  context.loaderOverlay.hide();
+                  context.read<TimerCubit>().setTimer(Duration(seconds: 0));
+                  return Text("00:00:00");
+                } else if (time.inSeconds == 1) {
+                  context.loaderOverlay.show();
+                  return Text("00:00:00");
+                } else {
+                  context.loaderOverlay.hide();
+                  //context.read<TimerCubit>().startTimer();
+
+                  String twoDigitsGang(int n) => n.toString().padLeft(2, '0');
+                  final hours = twoDigitsGang(time.inHours);
+                  final minutes = twoDigitsGang(time.inMinutes.remainder(60));
+                  final seconds = twoDigitsGang(time.inSeconds.remainder(60));
+
+                  return Text("$hours:$minutes:$seconds");
+                }
               },
             ),
             ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    primary: startBlur ? Colors.grey : Colors.blue),
                 onPressed: () {
-                  context.read<NewTestCubit>().addSecond();
-                },
-                child: Text("add")),
-            ElevatedButton(
-                onPressed: () {
-                  context.read<NewTestCubit>().setTimer(Duration(seconds: 90));
-                },
-                child: Text("set")),
-            ElevatedButton(
-                onPressed: () {
-                  context.read<NewTestCubit>().startTimer();
+                  if (startBlur == false) {
+                    context.read<TimerCubit>().startTimer();
+                    setState(() {
+                      startBlur = true;
+                    });
+                  }
                 },
                 child: Text("start timer")),
             ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    primary: stopBlur ? Colors.grey : Colors.blue),
                 onPressed: () {
-                  context.read<NewTestCubit>().stopTimer();
+                  setState(() {
+                    startBlur = false;
+                  });
+                  context.read<TimerCubit>().stopTimer();
                 },
                 child: Text("stop timer"))
 
