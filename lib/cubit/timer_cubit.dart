@@ -6,7 +6,7 @@ import 'package:building_site_tracker/domain/user_authentication/user_authentica
 import '../domain/time_tracker/time_tracker_impl.dart';
 
 class TimerCubit extends Cubit<Duration> {
-  TimerCubit() : super(Duration(seconds: 1));
+  TimerCubit() : super(Duration(days: 187));
   Timer? timer;
 
   void setTimer(Duration newDuration) {

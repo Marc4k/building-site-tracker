@@ -1,11 +1,16 @@
 import 'dart:async';
 
+import 'package:building_site_tracker/constants/colors.dart';
 import 'package:building_site_tracker/cubit/get_current_time_cubit%20copy.dart';
+import 'package:building_site_tracker/cubit/start_stop_cubit.dart';
 import 'package:building_site_tracker/cubit/timer_cubit.dart';
 import 'package:building_site_tracker/domain/time_tracker/time_tracker_impl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loader_overlay/loader_overlay.dart';
+
+import '../../../constants/styles.dart';
 
 class TimeTrackerSite extends StatefulWidget {
   const TimeTrackerSite({Key? key, required this.name}) : super(key: key);
@@ -16,79 +21,188 @@ class TimeTrackerSite extends StatefulWidget {
   State<TimeTrackerSite> createState() => _TimeTrackerSiteState();
 }
 
-bool startBlur = false;
-bool stopBlur = true;
-
 class _TimeTrackerSiteState extends State<TimeTrackerSite> {
+  bool canStart = true;
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    context.read<TimerCubit>().stopTimer();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return LoaderOverlay(
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: SafeArea(
-            child: Column(
-          children: [
-            Text(widget.name),
-            BlocBuilder<TimerCubit, Duration>(
-              builder: (context, time) {
-                if (time.inDays == 99) {
-                  context.loaderOverlay.hide();
-                  context.read<TimerCubit>().setTimer(Duration(seconds: 0));
-                  return Text("00:00:00");
-                } else if (time.inSeconds == 1) {
-                  context.loaderOverlay.show();
-                  return Text("00:00:00");
-                } else {
-                  context.loaderOverlay.hide();
-                  //context.read<TimerCubit>().startTimer();
+            child: Padding(
+          padding: EdgeInsets.all(24.r),
+          child: Column(
+            children: [
+              Center(
+                child: Text(
+                  widget.name,
+                  style: heading1Style,
+                ),
+              ),
+              SizedBox(height: 30.h),
+              BlocBuilder<TimerCubit, Duration>(
+                builder: (context, time) {
+                  if (time.inDays != 99 &&
+                      time.inDays != 187 &&
+                      time.inSeconds != 0) {
+                    context.read<StartStopCubit>().setStopActive();
+                    print(time);
+                  }
 
-                  String twoDigitsGang(int n) => n.toString().padLeft(2, '0');
-                  final hours = twoDigitsGang(time.inHours);
-                  final minutes = twoDigitsGang(time.inMinutes.remainder(60));
-                  final seconds = twoDigitsGang(time.inSeconds.remainder(60));
+                  if (time.inDays == 99) {
+                    context.loaderOverlay.hide();
+                    context.read<StartStopCubit>().setStartActive();
 
-                  return Text("$hours:$minutes:$seconds");
-                }
-              },
-            ),
-            ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    primary: startBlur ? Colors.grey : Colors.blue),
-                onPressed: () {
-                  if (startBlur == false) {
-                    context.read<TimerCubit>().startTimer();
-                    setState(() {
-                      startBlur = true;
-                    });
+                    context.read<TimerCubit>().setTimer(Duration(seconds: 0));
+                    return SizedBox(
+                      height: 220.0.h,
+                      width: 220.0.h,
+                      child: Stack(
+                        children: <Widget>[
+                          Center(
+                            child: Container(
+                              width: 220.h,
+                              height: 220.w,
+                              child: CircularProgressIndicator(
+                                color: CustomColors.yellow,
+                                backgroundColor: CustomColors.grey,
+                                strokeWidth: 20,
+                                value: 0,
+                              ),
+                            ),
+                          ),
+                          Center(
+                              child: Text(
+                            "00h 00min 00s",
+                            style: subheading1Style,
+                          )),
+                        ],
+                      ),
+                    );
+                  } else if (time.inDays == 187) {
+                    context.loaderOverlay.show();
+                    context.read<StartStopCubit>().setStartActive();
+
+                    return SizedBox(
+                      height: 220.0.h,
+                      width: 220.0.h,
+                      child: Stack(
+                        children: <Widget>[
+                          Center(
+                            child: Container(
+                              width: 220.h,
+                              height: 220.w,
+                              child: CircularProgressIndicator(
+                                color: CustomColors.yellow,
+                                backgroundColor: CustomColors.grey,
+                                strokeWidth: 20,
+                                value: 0,
+                              ),
+                            ),
+                          ),
+                          Center(
+                              child: Text(
+                            "00h 00min 00s",
+                            style: subheading1Style,
+                          )),
+                        ],
+                      ),
+                    );
+                  } else {
+                    context.loaderOverlay.hide();
+
+                    String twoDigitsGang(int n) => n.toString().padLeft(2, '0');
+                    final hours = twoDigitsGang(time.inHours);
+                    final minutes = twoDigitsGang(time.inMinutes.remainder(60));
+                    final seconds = twoDigitsGang(time.inSeconds.remainder(60));
+                    final valueMinutes = (1 / 60) * time.inMinutes;
+
+                    // print(valueseconds);
+
+                    return SizedBox(
+                      height: 220.0.h,
+                      width: 220.0.h,
+                      child: Stack(
+                        children: <Widget>[
+                          Center(
+                            child: Container(
+                              width: 220.h,
+                              height: 220.w,
+                              child: CircularProgressIndicator(
+                                color: CustomColors.yellow,
+                                backgroundColor: CustomColors.grey,
+                                strokeWidth: 15,
+                                value: valueMinutes,
+                              ),
+                            ),
+                          ),
+                          Center(
+                              child: Text(
+                            "${hours}h ${minutes}min ${seconds}s",
+                            style: subheading1Style,
+                          )),
+                        ],
+                      ),
+                    );
                   }
                 },
-                child: Text("start timer")),
-            ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    primary: stopBlur ? Colors.grey : Colors.blue),
-                onPressed: () {
-                  setState(() {
-                    startBlur = false;
-                  });
-                  context.read<TimerCubit>().stopTimer();
+              ),
+              SizedBox(height: 45.h),
+              BlocBuilder<StartStopCubit, int>(
+                builder: (context, indexValue) {
+                  return Row(
+                    children: [
+                      Spacer(),
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              elevation: indexValue == 0 ? 5 : 0,
+                              fixedSize: Size(135.w, 45.h),
+                              shape: StadiumBorder(),
+                              primary: CustomColors.yellow),
+                          onPressed: () async {
+                            if (indexValue == 0) {
+                              context.read<StartStopCubit>().setStopActive();
+
+                              context.read<TimerCubit>().startTimer();
+
+                              await TimeTrackerImpl()
+                                  .startTimer(name: widget.name);
+                            }
+                          },
+                          child: Text("Start")),
+                      Spacer(flex: 2),
+                      ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              elevation: indexValue == 0 ? 0 : 5,
+                              fixedSize: Size(135.w, 45.h),
+                              shape: StadiumBorder(),
+                              primary: CustomColors.yellow),
+                          onPressed: () async {
+                            if (indexValue == 1) {
+                              context.read<TimerCubit>().stopTimer();
+                              context.read<StartStopCubit>().setStartActive();
+
+                              await TimeTrackerImpl()
+                                  .stopTimer(name: widget.name);
+                            }
+                          },
+                          child: Text("Stop")),
+                      Spacer(),
+                    ],
+                  );
                 },
-                child: Text("stop timer"))
-
-            /*   BlocBuilder<GetCurrentTimeCubit, Duration>(
-              builder: (context, time) {
-                if (time.inDays == 99) {
-                  context.loaderOverlay.hide();
-                } else if (time.inSeconds == 0) {
-                  context.loaderOverlay.show();
-                } else {
-                  context.loaderOverlay.hide();
-                  duration = time;
-                  startTimer();
-                }
-
-                return Center(child: Text("$hours:$minutes:$seconds"));
-              },
-            ),*/
-          ],
+              ),
+              SizedBox(height: 43.h),
+              Divider(thickness: 1),
+            ],
+          ),
         )),
       ),
     );

@@ -84,8 +84,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                                               GetBuildingSiteDataCubit()
                                                                 ..getNames())
                                                     ],
-                                                    child:
-                                                        BuildingSiteScreen())));
+                                                    child: BuildingSiteScreen(
+                                                        name: names[index]))));
                                   }, (failure) {});
                                 },
                               );

@@ -1,16 +1,22 @@
 import 'package:building_site_tracker/cubit/get_building_site_data_cubit.dart';
 import 'package:building_site_tracker/cubit/get_current_time_cubit%20copy.dart';
+import 'package:building_site_tracker/cubit/start_stop_cubit.dart';
 import 'package:building_site_tracker/cubit/timer_cubit.dart';
 import 'package:building_site_tracker/domain/building_site/building_site_impl.dart';
+import 'package:building_site_tracker/screens/building_sites/widget/building_site_item.dart';
 import 'package:building_site_tracker/screens/time_tracker_site/view/time_tracker_site.dart';
 import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
-class BuildingSiteScreen extends StatefulWidget {
-  const BuildingSiteScreen({Key? key}) : super(key: key);
+import '../../../constants/styles.dart';
 
+class BuildingSiteScreen extends StatefulWidget {
+  const BuildingSiteScreen({Key? key, required this.name}) : super(key: key);
+
+  final String name;
   @override
   State<BuildingSiteScreen> createState() => _BuildingSiteScreenState();
 }
@@ -22,45 +28,57 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
   Widget build(BuildContext context) {
     return LoaderOverlay(
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: SafeArea(
-            child: Column(
-          children: [
-            BlocBuilder<GetBuildingSiteDataCubit, List<String>>(
-              builder: (context, names) {
-                return Expanded(
-                    child: ListView.builder(
-                  itemCount: names.length,
-                  itemBuilder: (context, index) {
-                    if (names.isEmpty) {
-                      return Text("Empty");
-                    } else {
-                      return ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => MultiBlocProvider(
-                                        providers: [
-                                          BlocProvider<GetCurrentTimeCubit>(
-                                              create: (BuildContext context) =>
-                                                  GetCurrentTimeCubit(
-                                                      names[index])
-                                                    ..getTime()),
-                                          BlocProvider<TimerCubit>(
-                                              create: (BuildContext context) =>
-                                                  TimerCubit()
-                                                    ..getCurrentTimeC(
-                                                        names[index]))
-                                        ],
-                                        child: TimeTrackerSite(
-                                          name: names[index],
-                                        ))));
-                          },
-                          child: Text(names[index]));
-                    }
-                  },
-                ));
-              },
-            )
-          ],
+            child: Padding(
+          padding: EdgeInsets.all(24.r),
+          child: Column(
+            children: [
+              Center(
+                child: Text(
+                  widget.name,
+                  style: heading1Style,
+                ),
+              ),
+              SizedBox(height: 30.h),
+              BlocBuilder<GetBuildingSiteDataCubit, List<String>>(
+                builder: (context, names) {
+                  return Expanded(
+                      child: ListView.builder(
+                    itemCount: names.length,
+                    itemBuilder: (context, index) {
+                      if (names.isEmpty) {
+                        return Text("Empty");
+                      } else {
+                        return BuildingSiteItem(
+                            name: names[index],
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => MultiBlocProvider(
+                                          providers: [
+                                            BlocProvider<StartStopCubit>(
+                                                create:
+                                                    (BuildContext context) =>
+                                                        StartStopCubit()
+                                                          ..setStartActive()),
+                                            BlocProvider<TimerCubit>(
+                                                create:
+                                                    (BuildContext context) =>
+                                                        TimerCubit()
+                                                          ..getCurrentTimeC(
+                                                              names[index]))
+                                          ],
+                                          child: TimeTrackerSite(
+                                            name: names[index],
+                                          ))));
+                            });
+                      }
+                    },
+                  ));
+                },
+              )
+            ],
+          ),
         )),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {

@@ -24,7 +24,7 @@ class LoginScreenAvatar extends StatelessWidget {
             style: subheading1Style,
           ),
           SizedBox(height: 5.h),
-          Divider()
+          Divider(thickness: 1)
         ],
       ),
     );
