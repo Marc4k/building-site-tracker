@@ -1,6 +1,8 @@
+import 'package:building_site_tracker/domain/time_tracker/model/time_model.dart';
 import 'package:building_site_tracker/domain/time_tracker/time_tracker_rep.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 
 class TimeTrackerImpl extends TimeTrackerRep {
   @override
@@ -108,5 +110,63 @@ class TimeTrackerImpl extends TimeTrackerRep {
     }
 
     return diff;
+  }
+
+  @override
+  Future<List<TimeModel>> getHours({required String name}) async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+    final uid = user!.uid;
+    List<TimeModel> timeData = [];
+    String buildingSiteId = "";
+    await FirebaseFirestore.instance
+        .collection("buildingsite")
+        .where("name", isEqualTo: name)
+        .get()
+        .then((snapshot) {
+      snapshot.docs.forEach((element) {
+        //Object? data = element.data();
+        Map<String, dynamic> data = element.data() as Map<String, dynamic>;
+
+        buildingSiteId = element.id;
+      });
+    });
+
+    await FirebaseFirestore.instance
+        .collection("time")
+        .where("buildingSiteId", isEqualTo: buildingSiteId)
+        .where("isFinished", isEqualTo: true)
+        .where("userID", isEqualTo: uid)
+        .get()
+        .then((snapshot) {
+      snapshot.docs.forEach((element) {
+        //Object? data = element.data();
+        Map<String, dynamic> data = element.data() as Map<String, dynamic>;
+
+        DateTime startTime = (data['startTime'] as Timestamp).toDate();
+        DateTime stopTime = (data['stopTime'] as Timestamp).toDate();
+
+        //fromat Date
+        DateFormat dateFormat = DateFormat("dd.MM.yyyy");
+        String date =
+            dateFormat.format((data['startTime'] as Timestamp).toDate());
+
+        DateFormat dateFormatHour = DateFormat("HH:mm");
+        String startTimeFromatted = dateFormatHour.format(startTime);
+        String stopTimeFormatted = dateFormatHour.format(stopTime);
+
+        Duration diff = stopTime.difference(startTime);
+
+        int time = diff.inHours;
+
+        timeData.add(TimeModel(
+            buildingSiteId: buildingSiteId,
+            date: date,
+            startEndTime: "$startTimeFromatted-$stopTimeFormatted",
+            hours: time));
+      });
+    });
+
+    return timeData;
   }
 }

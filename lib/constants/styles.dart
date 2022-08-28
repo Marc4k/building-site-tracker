@@ -14,3 +14,9 @@ TextStyle subheading1Style = TextStyle(
     fontWeight: FontWeight.w400,
     color: CustomColors.textColor,
     fontFamily: "Lato");
+
+TextStyle bodyStyle = TextStyle(
+    fontSize: 16.sp,
+    fontWeight: FontWeight.w300,
+    color: CustomColors.textColor,
+    fontFamily: "Lato");

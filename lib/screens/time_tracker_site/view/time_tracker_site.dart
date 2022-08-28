@@ -1,9 +1,10 @@
 import 'dart:async';
 
 import 'package:building_site_tracker/constants/colors.dart';
-import 'package:building_site_tracker/cubit/get_current_time_cubit%20copy.dart';
+import 'package:building_site_tracker/cubit/get_time_data_cubit.dart';
 import 'package:building_site_tracker/cubit/start_stop_cubit.dart';
 import 'package:building_site_tracker/cubit/timer_cubit.dart';
+import 'package:building_site_tracker/domain/time_tracker/model/time_model.dart';
 import 'package:building_site_tracker/domain/time_tracker/time_tracker_impl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
 import '../../../constants/styles.dart';
+import '../widget/show_all_times_widget.dart';
 
 class TimeTrackerSite extends StatefulWidget {
   const TimeTrackerSite({Key? key, required this.name}) : super(key: key);
@@ -188,6 +190,9 @@ class _TimeTrackerSiteState extends State<TimeTrackerSite> {
                             if (indexValue == 1) {
                               context.read<TimerCubit>().stopTimer();
                               context.read<StartStopCubit>().setStartActive();
+                              context
+                                  .read<GetTimeDataCubit>()
+                                  .getTimeData(widget.name);
 
                               await TimeTrackerImpl()
                                   .stopTimer(name: widget.name);
@@ -201,6 +206,26 @@ class _TimeTrackerSiteState extends State<TimeTrackerSite> {
               ),
               SizedBox(height: 43.h),
               Divider(thickness: 1),
+              BlocBuilder<GetTimeDataCubit, List<TimeModel>>(
+                builder: (context, timeData) {
+                  return Expanded(
+                      child: ListView.builder(
+                    itemCount: timeData.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          SizedBox(height: 10.h),
+                          ShowAllTimesWidget(
+                            date: timeData[index].date,
+                            hour: timeData[index].hours,
+                            time: timeData[index].startEndTime,
+                          ),
+                        ],
+                      );
+                    },
+                  ));
+                },
+              )
             ],
           ),
         )),

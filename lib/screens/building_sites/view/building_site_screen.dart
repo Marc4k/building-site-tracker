@@ -1,5 +1,5 @@
 import 'package:building_site_tracker/cubit/get_building_site_data_cubit.dart';
-import 'package:building_site_tracker/cubit/get_current_time_cubit%20copy.dart';
+import 'package:building_site_tracker/cubit/get_time_data_cubit.dart';
 import 'package:building_site_tracker/cubit/start_stop_cubit.dart';
 import 'package:building_site_tracker/cubit/timer_cubit.dart';
 import 'package:building_site_tracker/domain/building_site/building_site_impl.dart';
@@ -66,6 +66,12 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
                                                     (BuildContext context) =>
                                                         TimerCubit()
                                                           ..getCurrentTimeC(
+                                                              names[index])),
+                                            BlocProvider<GetTimeDataCubit>(
+                                                create:
+                                                    (BuildContext context) =>
+                                                        GetTimeDataCubit()
+                                                          ..getTimeData(
                                                               names[index]))
                                           ],
                                           child: TimeTrackerSite(
