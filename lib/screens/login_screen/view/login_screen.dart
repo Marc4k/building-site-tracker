@@ -71,8 +71,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                       .signInUser("${names[index]}@tracker.at",
                                           "123456");
                                   context.loaderOverlay.hide();
-                                  user.fold((userData) {
-                                    Navigator.of(context).push(
+                                  user.fold((userData) async {
+                                    await Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 MultiBlocProvider(
@@ -86,6 +86,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                                     ],
                                                     child: BuildingSiteScreen(
                                                         name: names[index]))));
+
+                                    context
+                                        .read<GetNamesDataCubit>()
+                                        .getNames();
                                   }, (failure) {});
                                 },
                               );

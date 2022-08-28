@@ -30,4 +30,25 @@ class BuildingSiteImpl extends BuildingSiteRep {
       "name": name,
     });
   }
+
+  @override
+  Future<void> deleteBuildingSite({required String name}) async {
+    String buildingSiteId = "";
+    await FirebaseFirestore.instance
+        .collection("buildingsite")
+        .where("name", isEqualTo: name)
+        .get()
+        .then((snapshot) {
+      snapshot.docs.forEach((element) {
+        //Object? data = element.data();
+        Map<String, dynamic> data = element.data() as Map<String, dynamic>;
+
+        buildingSiteId = element.id;
+      });
+    });
+
+    var collection = FirebaseFirestore.instance.collection('buildingsite/');
+
+    await collection.doc(buildingSiteId).delete();
+  }
 }

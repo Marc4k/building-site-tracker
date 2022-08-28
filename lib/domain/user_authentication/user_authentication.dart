@@ -10,5 +10,7 @@ abstract class UserAuthentication {
       String email, String password, String name);
 
   Future<List<String>> getAllNames();
+
+  Future<void> deleteUser({required String name});
 }
 //

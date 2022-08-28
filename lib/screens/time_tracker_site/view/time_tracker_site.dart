@@ -189,6 +189,10 @@ class _TimeTrackerSiteState extends State<TimeTrackerSite> {
                           onPressed: () async {
                             if (indexValue == 1) {
                               context.read<TimerCubit>().stopTimer();
+                              context
+                                  .read<TimerCubit>()
+                                  .setTimer(Duration(seconds: 0));
+
                               context.read<StartStopCubit>().setStartActive();
                               context
                                   .read<GetTimeDataCubit>()

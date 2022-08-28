@@ -1,10 +1,14 @@
+import 'package:building_site_tracker/constants/colors.dart';
+import 'package:building_site_tracker/constants/pw.dart';
 import 'package:building_site_tracker/cubit/get_building_site_data_cubit.dart';
+import 'package:building_site_tracker/cubit/get_names_data_cubit.dart';
 import 'package:building_site_tracker/cubit/get_time_data_cubit.dart';
 import 'package:building_site_tracker/cubit/start_stop_cubit.dart';
 import 'package:building_site_tracker/cubit/timer_cubit.dart';
 import 'package:building_site_tracker/domain/building_site/building_site_impl.dart';
 import 'package:building_site_tracker/screens/building_sites/widget/building_site_item.dart';
 import 'package:building_site_tracker/screens/time_tracker_site/view/time_tracker_site.dart';
+import 'package:building_site_tracker/screens/user_settings_screen/view/user_settings_screen.dart';
 import 'package:flash/flash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,8 +26,11 @@ class BuildingSiteScreen extends StatefulWidget {
 }
 
 TextEditingController _name = TextEditingController();
+TextEditingController _passwort = TextEditingController();
 
 class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
+  bool isLocked = false;
+
   @override
   Widget build(BuildContext context) {
     return LoaderOverlay(
@@ -34,11 +41,134 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
           padding: EdgeInsets.all(24.r),
           child: Column(
             children: [
-              Center(
-                child: Text(
-                  widget.name,
-                  style: heading1Style,
-                ),
+              Row(
+                children: [
+                  Text(
+                    widget.name,
+                    style: heading1Style,
+                  ),
+                  Spacer(),
+                  Visibility(
+                    visible: !isLocked,
+                    child: IconButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) =>
+                                  MultiBlocProvider(providers: [
+                                    BlocProvider<GetNamesDataCubit>(
+                                        create: (BuildContext context) =>
+                                            GetNamesDataCubit()..getNames()),
+                                  ], child: UserSettingScreen())));
+                        },
+                        icon: Icon(
+                          Icons.person_add,
+                          color: Colors.black,
+                          size: 20.r,
+                        )),
+                  ),
+                  Visibility(
+                    visible: !isLocked,
+                    child: IconButton(
+                        onPressed: () {},
+                        icon: Icon(
+                          Icons.remove_red_eye_outlined,
+                          color: Colors.black,
+                          size: 20.r,
+                        )),
+                  ),
+                  Visibility(
+                    visible: widget.name == "Mathias",
+                    child: IconButton(
+                        onPressed: () async {
+                          if (isLocked == true) {
+                            await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Entsperren'),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        TextFormField(
+                                          controller: _passwort,
+                                          obscureText: true,
+                                          decoration: InputDecoration(
+                                            hintText: "Passwort",
+                                            labelText: "Passwort",
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    actions: <Widget>[
+                                      Center(
+                                        child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                shape: StadiumBorder(),
+                                                primary: CustomColors.yellow),
+                                            onPressed: () {
+                                              if (_passwort.text == PW.pass) {
+                                                setState(() {
+                                                  isLocked = false;
+                                                });
+                                                Navigator.pop(context);
+
+                                                showFlash(
+                                                  context: context,
+                                                  duration: const Duration(
+                                                      seconds: 4),
+                                                  builder:
+                                                      (context, controller) {
+                                                    return Flash.bar(
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                        enableVerticalDrag:
+                                                            true,
+                                                        horizontalDismissDirection:
+                                                            HorizontalDismissDirection
+                                                                .startToEnd,
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    8)),
+                                                        controller: controller,
+                                                        child: FlashBar(
+                                                          content: Text(
+                                                              "Entsperrt!"),
+                                                          icon: Icon(
+                                                            Icons.check,
+                                                            color: Colors.green,
+                                                            size: 24,
+                                                          ),
+                                                          shouldIconPulse: true,
+                                                        ));
+                                                  },
+                                                );
+                                              }
+                                            },
+                                            child: Text("entsperren")),
+                                      )
+                                    ],
+                                  );
+                                });
+                          } else {
+                            setState(() {
+                              isLocked = true;
+                            });
+                          }
+
+                          _passwort.clear();
+                        },
+                        icon: Icon(
+                          isLocked
+                              ? Icons.lock_open_outlined
+                              : Icons.lock_outline,
+                          color: Colors.black,
+                          size: 20.r,
+                        )),
+                  ),
+                ],
               ),
               SizedBox(height: 30.h),
               BlocBuilder<GetBuildingSiteDataCubit, List<String>>(
@@ -51,6 +181,18 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
                         return Text("Empty");
                       } else {
                         return BuildingSiteItem(
+                            onDeleteTap: () async {
+                              context.loaderOverlay.show();
+
+                              await BuildingSiteImpl()
+                                  .deleteBuildingSite(name: names[index]);
+                              context.loaderOverlay.hide();
+
+                              context
+                                  .read<GetBuildingSiteDataCubit>()
+                                  .getNames();
+                            },
+                            isLocked: isLocked,
                             name: names[index],
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
@@ -87,6 +229,7 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
           ),
         )),
         floatingActionButton: FloatingActionButton(
+          backgroundColor: CustomColors.yellow,
           onPressed: () async {
             await showDialog(
                 context: context,
@@ -108,18 +251,13 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
                     ),
                     actions: <Widget>[
                       Center(
-                        child: FlatButton(
-                          onPressed: () async {
-                            context.loaderOverlay.show();
-
-                            Navigator.pop(context);
-
-                            // Navigator.of(context).pop();
-                          },
-                          textColor: Theme.of(context).primaryColor,
-                          child: const Text('Ok'),
-                        ),
-                      ),
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                shape: StadiumBorder(),
+                                primary: CustomColors.yellow),
+                            onPressed: () {},
+                            child: Text("hinzufügen")),
+                      )
                     ],
                   );
                 });
@@ -152,10 +290,10 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
                     ));
               },
             );
-
+            _name.clear();
             context.loaderOverlay.hide();
           },
-          child: Icon(Icons.add),
+          child: Icon(Icons.add_location_alt_rounded),
         ),
       ),
     );

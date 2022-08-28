@@ -89,4 +89,43 @@ class UserAuthenticationImpl extends UserAuthentication {
 
     return names;
   }
+
+  @override
+  Future<void> deleteUser({required String name}) async {
+    UserCredential user = await FirebaseAuth.instance
+        .signInWithEmailAndPassword(
+            email: "$name@tracker.at", password: "123456");
+
+    String userId = user.user!.uid;
+
+    await FirebaseFirestore.instance
+        .collection("time")
+        .where("userID", isEqualTo: userId)
+        .get()
+        .then((snapshot) {
+      snapshot.docs.forEach((element) {
+        //Object? data = element.data();
+        Map<String, dynamic> data = element.data() as Map<String, dynamic>;
+
+        element.reference.delete();
+      });
+    });
+
+    await FirebaseFirestore.instance
+        .collection("user")
+        .where("name", isEqualTo: name)
+        .get()
+        .then((snapshot) {
+      snapshot.docs.forEach((element) {
+        //Object? data = element.data();
+        Map<String, dynamic> data = element.data() as Map<String, dynamic>;
+
+        element.reference.delete();
+      });
+    });
+
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? remove_user = auth.currentUser;
+    remove_user!.delete();
+  }
 }
