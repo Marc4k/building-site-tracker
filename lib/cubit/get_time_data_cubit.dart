@@ -6,8 +6,8 @@ import 'package:building_site_tracker/domain/time_tracker/time_tracker_impl.dart
 class GetTimeDataCubit extends Cubit<List<TimeModel>> {
   GetTimeDataCubit() : super([]);
 
-  Future<void> getTimeData(String name) async =>
-      emit(await TimeTrackerImpl().getHours(name: name));
+  Future<void> getTimeData(String buildingSiteId) async =>
+      emit(await TimeTrackerImpl().getHours(buildingSiteId: buildingSiteId));
 
   @override
   void onChange(Change<List<TimeModel>> change) {

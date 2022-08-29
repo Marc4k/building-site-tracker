@@ -6,22 +6,8 @@ import 'package:intl/intl.dart';
 
 class TimeTrackerImpl extends TimeTrackerRep {
   @override
-  Future<void> startTimer({required String name}) async {
+  Future<void> startTimer({required String buildingSiteId}) async {
     DateTime now = DateTime.now();
-    String buildingSiteId = "";
-    await FirebaseFirestore.instance
-        .collection("buildingsite")
-        .where("name", isEqualTo: name)
-        .get()
-        .then((snapshot) {
-      snapshot.docs.forEach((element) {
-        //Object? data = element.data();
-        Map<String, dynamic> data = element.data() as Map<String, dynamic>;
-
-        buildingSiteId = element.id;
-      });
-    });
-
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
     final uid = user!.uid;
@@ -38,7 +24,7 @@ class TimeTrackerImpl extends TimeTrackerRep {
   }
 
   @override
-  Future<void> stopTimer({required String name}) async {
+  Future<void> stopTimer({required String buildingSiteId}) async {
     DateTime now = DateTime.now();
     String id = "";
     final FirebaseAuth auth = FirebaseAuth.instance;
@@ -49,6 +35,7 @@ class TimeTrackerImpl extends TimeTrackerRep {
     await FirebaseFirestore.instance
         .collection("time")
         .where("userID", isEqualTo: uid)
+        .where("buildingSiteId", isEqualTo: buildingSiteId)
         .where("isFinished", isEqualTo: false)
         .get()
         .then((snapshot) {
@@ -63,21 +50,7 @@ class TimeTrackerImpl extends TimeTrackerRep {
   }
 
   @override
-  Future<Duration> getCurrentTime({required String name}) async {
-    String buildingSiteId = "";
-    await FirebaseFirestore.instance
-        .collection("buildingsite")
-        .where("name", isEqualTo: name)
-        .get()
-        .then((snapshot) {
-      snapshot.docs.forEach((element) {
-        //Object? data = element.data();
-        Map<String, dynamic> data = element.data() as Map<String, dynamic>;
-
-        buildingSiteId = element.id;
-      });
-    });
-
+  Future<Duration> getCurrentTime({required String buildingSiteId}) async {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
     final uid = user!.uid;
@@ -113,24 +86,11 @@ class TimeTrackerImpl extends TimeTrackerRep {
   }
 
   @override
-  Future<List<TimeModel>> getHours({required String name}) async {
+  Future<List<TimeModel>> getHours({required String buildingSiteId}) async {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User? user = auth.currentUser;
     final uid = user!.uid;
     List<TimeModel> timeData = [];
-    String buildingSiteId = "";
-    await FirebaseFirestore.instance
-        .collection("buildingsite")
-        .where("name", isEqualTo: name)
-        .get()
-        .then((snapshot) {
-      snapshot.docs.forEach((element) {
-        //Object? data = element.data();
-        Map<String, dynamic> data = element.data() as Map<String, dynamic>;
-
-        buildingSiteId = element.id;
-      });
-    });
 
     await FirebaseFirestore.instance
         .collection("time")

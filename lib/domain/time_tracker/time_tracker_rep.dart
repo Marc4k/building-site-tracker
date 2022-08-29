@@ -1,12 +1,12 @@
 import 'package:building_site_tracker/domain/time_tracker/model/time_model.dart';
 
 abstract class TimeTrackerRep {
-  Future<void> startTimer({required String name});
-  Future<void> stopTimer({required String name});
+  Future<void> startTimer({required String buildingSiteId});
+  Future<void> stopTimer({required String buildingSiteId});
 
-  Future<Duration> getCurrentTime({required String name});
+  Future<Duration> getCurrentTime({required String buildingSiteId});
 
-  Future<List<TimeModel>> getHours({required String name});
+  Future<List<TimeModel>> getHours({required String buildingSiteId});
 
   Future<void> deleteTime({required String id});
 

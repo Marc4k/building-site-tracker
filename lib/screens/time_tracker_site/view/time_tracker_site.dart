@@ -15,10 +15,12 @@ import '../../../constants/styles.dart';
 import '../widget/show_all_times_widget.dart';
 
 class TimeTrackerSite extends StatefulWidget {
-  const TimeTrackerSite({Key? key, required this.name}) : super(key: key);
+  const TimeTrackerSite(
+      {Key? key, required this.buildingSiteId, required this.name1})
+      : super(key: key);
 
-  final String name;
-
+  final String buildingSiteId;
+  final String name1;
   @override
   State<TimeTrackerSite> createState() => _TimeTrackerSiteState();
 }
@@ -44,7 +46,7 @@ class _TimeTrackerSiteState extends State<TimeTrackerSite> {
             children: [
               Center(
                 child: Text(
-                  widget.name,
+                  widget.name1,
                   style: heading1Style,
                 ),
               ),
@@ -179,8 +181,8 @@ class _TimeTrackerSiteState extends State<TimeTrackerSite> {
 
                               context.read<TimerCubit>().startTimer();
 
-                              await TimeTrackerImpl()
-                                  .startTimer(name: widget.name);
+                              await TimeTrackerImpl().startTimer(
+                                  buildingSiteId: widget.buildingSiteId);
                             }
                           },
                           child: Text("Start")),
@@ -200,12 +202,12 @@ class _TimeTrackerSiteState extends State<TimeTrackerSite> {
 
                               context.read<StartStopCubit>().setStartActive();
 
-                              await TimeTrackerImpl()
-                                  .stopTimer(name: widget.name);
+                              await TimeTrackerImpl().stopTimer(
+                                  buildingSiteId: widget.buildingSiteId);
 
                               context
                                   .read<GetTimeDataCubit>()
-                                  .getTimeData(widget.name);
+                                  .getTimeData(widget.buildingSiteId);
                             }
                           },
                           child: Text("Stop")),

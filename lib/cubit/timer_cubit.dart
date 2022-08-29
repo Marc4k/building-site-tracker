@@ -29,8 +29,9 @@ class TimerCubit extends Cubit<Duration> {
     timer?.cancel();
   }
 
-  Future<void> getCurrentTimeC(String name) async {
-    Duration newDuration = await TimeTrackerImpl().getCurrentTime(name: name);
+  Future<void> getCurrentTimeC(String buildingSiteId) async {
+    Duration newDuration =
+        await TimeTrackerImpl().getCurrentTime(buildingSiteId: buildingSiteId);
 
     if (newDuration.inSeconds != 0 && newDuration.inDays != 99) {
       startTimer();

@@ -3,6 +3,7 @@ import 'package:building_site_tracker/constants/styles.dart';
 import 'package:building_site_tracker/cubit/get_building_site_data_cubit.dart';
 import 'package:building_site_tracker/cubit/get_names_data_cubit.dart';
 import 'package:building_site_tracker/cubit/get_time_data_cubit.dart';
+import 'package:building_site_tracker/domain/building_site/model/building_site_model.dart';
 import 'package:building_site_tracker/domain/time_tracker/model/time_model.dart';
 import 'package:building_site_tracker/domain/time_tracker/time_tracker_impl.dart';
 import 'package:building_site_tracker/domain/user_authentication/user_authentication_impl.dart';
@@ -94,7 +95,7 @@ class _AllTimeScreenState extends State<AllTimeScreen> {
                 ),
               ),
               SizedBox(height: 20.h),
-              BlocBuilder<GetBuildingSiteDataCubit, List<String>>(
+              BlocBuilder<GetBuildingSiteDataCubit, List<BuildingSiteModel>>(
                 builder: (context, buildingSites) {
                   return Material(
                     elevation: 3,
@@ -117,7 +118,7 @@ class _AllTimeScreenState extends State<AllTimeScreen> {
                             (e) {
                               return DropdownMenuItem(
                                 value: e,
-                                child: Text(e),
+                                child: Text(e.name),
                               );
                             },
                           ).toList(),

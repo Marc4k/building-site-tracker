@@ -6,6 +6,7 @@ import 'package:building_site_tracker/cubit/get_time_data_cubit.dart';
 import 'package:building_site_tracker/cubit/start_stop_cubit.dart';
 import 'package:building_site_tracker/cubit/timer_cubit.dart';
 import 'package:building_site_tracker/domain/building_site/building_site_impl.dart';
+import 'package:building_site_tracker/domain/building_site/model/building_site_model.dart';
 import 'package:building_site_tracker/screens/all_times_screen/view/all_time_screen.dart';
 import 'package:building_site_tracker/screens/building_sites/widget/building_site_item.dart';
 import 'package:building_site_tracker/screens/time_tracker_site/view/time_tracker_site.dart';
@@ -30,7 +31,7 @@ TextEditingController _name = TextEditingController();
 TextEditingController _passwort = TextEditingController();
 
 class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
-  bool isLocked = false;
+  bool isLocked = true;
   bool klickedOnButton = false;
   @override
   Widget build(BuildContext context) {
@@ -187,13 +188,13 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
                 ],
               ),
               SizedBox(height: 30.h),
-              BlocBuilder<GetBuildingSiteDataCubit, List<String>>(
-                builder: (context, names) {
+              BlocBuilder<GetBuildingSiteDataCubit, List<BuildingSiteModel>>(
+                builder: (context, buildingSiteData) {
                   return Expanded(
                       child: ListView.builder(
-                    itemCount: names.length,
+                    itemCount: buildingSiteData.length,
                     itemBuilder: (context, index) {
-                      if (names.isEmpty) {
+                      if (buildingSiteData.isEmpty) {
                         context.loaderOverlay.show();
 
                         return Container();
@@ -202,8 +203,8 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
                             onDeleteTap: () async {
                               context.loaderOverlay.show();
 
-                              await BuildingSiteImpl()
-                                  .deleteBuildingSite(name: names[index]);
+                              await BuildingSiteImpl().deleteBuildingSite(
+                                  buildingSiteId: buildingSiteData[index].id);
                               context.loaderOverlay.hide();
 
                               context
@@ -211,7 +212,7 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
                                   .getNames();
                             },
                             isLocked: isLocked,
-                            name: names[index],
+                            name: buildingSiteData[index].name,
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => MultiBlocProvider(
@@ -226,16 +227,22 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
                                                     (BuildContext context) =>
                                                         TimerCubit()
                                                           ..getCurrentTimeC(
-                                                              names[index])),
+                                                              buildingSiteData[
+                                                                      index]
+                                                                  .id)),
                                             BlocProvider<GetTimeDataCubit>(
                                                 create:
                                                     (BuildContext context) =>
                                                         GetTimeDataCubit()
                                                           ..getTimeData(
-                                                              names[index]))
+                                                              buildingSiteData[
+                                                                      index]
+                                                                  .id))
                                           ],
                                           child: TimeTrackerSite(
-                                            name: names[index],
+                                            name1: buildingSiteData[index].name,
+                                            buildingSiteId:
+                                                buildingSiteData[index].id,
                                           ))));
                             });
                       }
