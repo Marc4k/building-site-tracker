@@ -47,6 +47,18 @@ class BuildingSiteImpl extends BuildingSiteRep {
       });
     });
 
+    await FirebaseFirestore.instance
+        .collection("time")
+        .where("buildingSiteId", isEqualTo: buildingSiteId)
+        .get()
+        .then((snapshot) {
+      snapshot.docs.forEach((element) {
+        //Object? data = element.data();
+        Map<String, dynamic> data = element.data() as Map<String, dynamic>;
+
+        element.reference.delete();
+      });
+    });
     var collection = FirebaseFirestore.instance.collection('buildingsite/');
 
     await collection.doc(buildingSiteId).delete();

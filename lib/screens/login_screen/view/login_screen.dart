@@ -48,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 builder: (context, names) {
                   if (names.isEmpty) {
                     context.loaderOverlay.show();
-                    return Container();
+                    return Expanded(child: Container());
                   } else {
                     context.loaderOverlay.hide();
 

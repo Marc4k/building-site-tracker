@@ -6,6 +6,7 @@ import 'package:building_site_tracker/cubit/get_time_data_cubit.dart';
 import 'package:building_site_tracker/cubit/start_stop_cubit.dart';
 import 'package:building_site_tracker/cubit/timer_cubit.dart';
 import 'package:building_site_tracker/domain/building_site/building_site_impl.dart';
+import 'package:building_site_tracker/screens/all_times_screen/view/all_time_screen.dart';
 import 'package:building_site_tracker/screens/building_sites/widget/building_site_item.dart';
 import 'package:building_site_tracker/screens/time_tracker_site/view/time_tracker_site.dart';
 import 'package:building_site_tracker/screens/user_settings_screen/view/user_settings_screen.dart';
@@ -69,7 +70,22 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
                   Visibility(
                     visible: !isLocked,
                     child: IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) =>
+                                  MultiBlocProvider(providers: [
+                                    BlocProvider<GetNamesDataCubit>(
+                                        create: (BuildContext context) =>
+                                            GetNamesDataCubit()..getNames()),
+                                    BlocProvider<GetBuildingSiteDataCubit>(
+                                        create: (BuildContext context) =>
+                                            GetBuildingSiteDataCubit()
+                                              ..getNames()),
+                                    BlocProvider<GetTimeDataCubit>(
+                                        create: (BuildContext context) =>
+                                            GetTimeDataCubit()),
+                                  ], child: AllTimeScreen())));
+                        },
                         icon: Icon(
                           Icons.remove_red_eye_outlined,
                           color: Colors.black,
@@ -178,7 +194,9 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
                     itemCount: names.length,
                     itemBuilder: (context, index) {
                       if (names.isEmpty) {
-                        return Text("Empty");
+                        context.loaderOverlay.show();
+
+                        return Container();
                       } else {
                         return BuildingSiteItem(
                             onDeleteTap: () async {

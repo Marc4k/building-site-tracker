@@ -160,6 +160,9 @@ class TimeTrackerImpl extends TimeTrackerRep {
         int time = diff.inHours;
 
         timeData.add(TimeModel(
+            startTime: startTime,
+            stopTime: stopTime,
+            id: element.id,
             buildingSiteId: buildingSiteId,
             date: date,
             startEndTime: "$startTimeFromatted-$stopTimeFormatted",
@@ -168,5 +171,24 @@ class TimeTrackerImpl extends TimeTrackerRep {
     });
 
     return timeData;
+  }
+
+  @override
+  Future<void> deleteTime({required String id}) async {
+    var collection = FirebaseFirestore.instance.collection('time/');
+
+    await collection.doc(id).delete();
+  }
+
+  @override
+  Future<void> editTime(
+      {required String id,
+      required DateTime newStart,
+      required DateTime newEnd}) async {
+    var collection = FirebaseFirestore.instance.collection('time');
+
+    await collection
+        .doc(id)
+        .update({"startTime": newStart, "stopTime": newEnd});
   }
 }

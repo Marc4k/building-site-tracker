@@ -7,4 +7,11 @@ abstract class TimeTrackerRep {
   Future<Duration> getCurrentTime({required String name});
 
   Future<List<TimeModel>> getHours({required String name});
+
+  Future<void> deleteTime({required String id});
+
+  Future<void> editTime(
+      {required String id,
+      required DateTime newStart,
+      required DateTime newEnd});
 }
