@@ -44,10 +44,23 @@ class _TimeTrackerSiteState extends State<TimeTrackerSite> {
           padding: EdgeInsets.all(24.r),
           child: Column(
             children: [
-              Center(
-                child: Text(
-                  widget.name1,
-                  style: heading1Style,
+              IntrinsicHeight(
+                child: Stack(
+                  children: [
+                    Align(
+                      child: Text(
+                        widget.name1,
+                        style: heading1Style,
+                      ),
+                    ),
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: Icon(Icons.arrow_back_ios))),
+                  ],
                 ),
               ),
               SizedBox(height: 30.h),

@@ -30,6 +30,8 @@ class BuildingSiteScreen extends StatefulWidget {
 TextEditingController _name = TextEditingController();
 TextEditingController _passwort = TextEditingController();
 
+List<String> images = ["schub.png", "ziegel.png", "steine2.png", "zement.png"];
+
 class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
   bool isLocked = true;
   bool klickedOnButton = false;
@@ -234,6 +236,7 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
                         return Container();
                       } else {
                         return BuildingSiteItem(
+                            image: "schub2.png",
                             onDeleteTap: () async {
                               context.loaderOverlay.show();
 

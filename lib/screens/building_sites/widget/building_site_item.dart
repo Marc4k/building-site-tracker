@@ -8,12 +8,14 @@ class BuildingSiteItem extends StatelessWidget {
       required this.name,
       required this.onTap,
       required this.isLocked,
-      required this.onDeleteTap})
+      required this.onDeleteTap,
+      required this.image})
       : super(key: key);
   final String name;
   final VoidCallback onTap;
   final bool isLocked;
   final VoidCallback onDeleteTap;
+  final String image;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -25,7 +27,7 @@ class BuildingSiteItem extends StatelessWidget {
           Row(
             children: [
               Image.asset(
-                "assets/image/schub2.png",
+                "assets/image/$image",
                 height: 25.h,
               ),
               SizedBox(
