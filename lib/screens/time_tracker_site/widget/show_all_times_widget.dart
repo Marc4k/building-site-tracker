@@ -1,5 +1,5 @@
-import 'package:building_site_tracker/constants/colors.dart';
-import 'package:building_site_tracker/constants/styles.dart';
+import '../../../constants/colors.dart';
+import '../../../constants/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

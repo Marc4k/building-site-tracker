@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:building_site_tracker/domain/building_site/building_site_impl.dart';
-import 'package:building_site_tracker/domain/user_authentication/user_authentication_impl.dart';
+import '../domain/building_site/building_site_impl.dart';
+import '../domain/user_authentication/user_authentication_impl.dart';
 
 import '../domain/building_site/model/building_site_model.dart';
 

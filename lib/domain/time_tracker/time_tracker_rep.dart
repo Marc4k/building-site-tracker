@@ -1,4 +1,4 @@
-import 'package:building_site_tracker/domain/time_tracker/model/time_model.dart';
+import 'model/time_model.dart';
 
 abstract class TimeTrackerRep {
   Future<void> startTimer({required String buildingSiteId});

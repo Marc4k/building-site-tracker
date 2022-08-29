@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:building_site_tracker/constants/colors.dart';
-import 'package:building_site_tracker/cubit/get_time_data_cubit.dart';
-import 'package:building_site_tracker/cubit/start_stop_cubit.dart';
-import 'package:building_site_tracker/cubit/timer_cubit.dart';
-import 'package:building_site_tracker/domain/time_tracker/model/time_model.dart';
-import 'package:building_site_tracker/domain/time_tracker/time_tracker_impl.dart';
+import '../../../constants/colors.dart';
+import '../../../cubit/get_time_data_cubit.dart';
+import '../../../cubit/start_stop_cubit.dart';
+import '../../../cubit/timer_cubit.dart';
+import '../../../domain/time_tracker/model/time_model.dart';
+import '../../../domain/time_tracker/time_tracker_impl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

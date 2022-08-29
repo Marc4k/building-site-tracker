@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:building_site_tracker/domain/user_authentication/user_authentication_impl.dart';
+import '../domain/user_authentication/user_authentication_impl.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

@@ -1,5 +1,5 @@
-import 'package:building_site_tracker/domain/time_tracker/model/time_model.dart';
-import 'package:building_site_tracker/domain/time_tracker/time_tracker_rep.dart';
+import 'model/time_model.dart';
+import 'time_tracker_rep.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';

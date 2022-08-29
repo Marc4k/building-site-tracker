@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:building_site_tracker/domain/user_authentication/user_authentication_impl.dart';
+import '../domain/user_authentication/user_authentication_impl.dart';
 
 import '../domain/time_tracker/time_tracker_impl.dart';
 

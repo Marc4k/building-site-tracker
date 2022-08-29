@@ -1,4 +1,4 @@
-import 'package:building_site_tracker/domain/building_site/building_site_rep.dart';
+import 'building_site_rep.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'model/building_site_model.dart';

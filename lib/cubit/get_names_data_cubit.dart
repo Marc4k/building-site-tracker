@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:building_site_tracker/domain/user_authentication/user_authentication_impl.dart';
+import '../domain/user_authentication/user_authentication_impl.dart';
 
 class GetNamesDataCubit extends Cubit<List<String>> {
   GetNamesDataCubit() : super([]);
