@@ -134,7 +134,7 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
                                                 showFlash(
                                                   context: context,
                                                   duration: const Duration(
-                                                      seconds: 4),
+                                                      seconds: 3),
                                                   builder:
                                                       (context, controller) {
                                                     return Flash.bar(
@@ -154,8 +154,42 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
                                                           content: Text(
                                                               "Entsperrt!"),
                                                           icon: Icon(
-                                                            Icons.check,
-                                                            color: Colors.green,
+                                                            Icons
+                                                                .lock_open_outlined,
+                                                            color: Colors.black,
+                                                            size: 24,
+                                                          ),
+                                                          shouldIconPulse: true,
+                                                        ));
+                                                  },
+                                                );
+                                              } else {
+                                                Navigator.pop(context);
+                                                showFlash(
+                                                  context: context,
+                                                  duration: const Duration(
+                                                      seconds: 3),
+                                                  builder:
+                                                      (context, controller) {
+                                                    return Flash.bar(
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                        enableVerticalDrag:
+                                                            true,
+                                                        horizontalDismissDirection:
+                                                            HorizontalDismissDirection
+                                                                .startToEnd,
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    8)),
+                                                        controller: controller,
+                                                        child: FlashBar(
+                                                          content: Text(
+                                                              "Falsches Passwort."),
+                                                          icon: Icon(
+                                                            Icons.error_outline,
+                                                            color: Colors.red,
                                                             size: 24,
                                                           ),
                                                           shouldIconPulse: true,
@@ -210,6 +244,31 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
                               context
                                   .read<GetBuildingSiteDataCubit>()
                                   .getNames();
+
+                              showFlash(
+                                context: context,
+                                duration: const Duration(seconds: 3),
+                                builder: (context, controller) {
+                                  return Flash.bar(
+                                      backgroundColor: Colors.white,
+                                      enableVerticalDrag: true,
+                                      horizontalDismissDirection:
+                                          HorizontalDismissDirection.startToEnd,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8)),
+                                      controller: controller,
+                                      child: FlashBar(
+                                        content: Text(
+                                            "${buildingSiteData[index].name} wurde gelöscht."),
+                                        icon: Icon(
+                                          Icons.delete,
+                                          color: Colors.black,
+                                          size: 24,
+                                        ),
+                                        shouldIconPulse: true,
+                                      ));
+                                },
+                              );
                             },
                             isLocked: isLocked,
                             name: buildingSiteData[index].name,
@@ -299,31 +358,59 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
             if (klickedOnButton == false) {
               return;
             }
-            await BuildingSiteImpl().createNewBuildingSite(name: _name.text);
+            dynamic data = await BuildingSiteImpl()
+                .createNewBuildingSite(name: _name.text);
+
+            data.fold((message) {
+              showFlash(
+                context: context,
+                duration: const Duration(seconds: 3),
+                builder: (context, controller) {
+                  return Flash.bar(
+                      backgroundColor: Colors.white,
+                      enableVerticalDrag: true,
+                      horizontalDismissDirection:
+                          HorizontalDismissDirection.startToEnd,
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      controller: controller,
+                      child: FlashBar(
+                        content: Text("${_name.text} wurde hinzugefügt."),
+                        icon: Icon(
+                          Icons.check,
+                          color: Colors.green,
+                          size: 24,
+                        ),
+                        shouldIconPulse: true,
+                      ));
+                },
+              );
+            }, (error) {
+              showFlash(
+                context: context,
+                duration: const Duration(seconds: 3),
+                builder: (context, controller) {
+                  return Flash.bar(
+                      backgroundColor: Colors.white,
+                      enableVerticalDrag: true,
+                      horizontalDismissDirection:
+                          HorizontalDismissDirection.startToEnd,
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      controller: controller,
+                      child: FlashBar(
+                        content: Text(error.errorMessage),
+                        icon: Icon(
+                          Icons.error_outline,
+                          color: Colors.red,
+                          size: 24,
+                        ),
+                        shouldIconPulse: true,
+                      ));
+                },
+              );
+            });
+
             context.read<GetBuildingSiteDataCubit>().getNames();
 
-            showFlash(
-              context: context,
-              duration: const Duration(seconds: 4),
-              builder: (context, controller) {
-                return Flash.bar(
-                    backgroundColor: Colors.white,
-                    enableVerticalDrag: true,
-                    horizontalDismissDirection:
-                        HorizontalDismissDirection.startToEnd,
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                    controller: controller,
-                    child: FlashBar(
-                      content: Text("${_name.text} wurde hinzugefügt."),
-                      icon: Icon(
-                        Icons.check,
-                        color: Colors.green,
-                        size: 24,
-                      ),
-                      shouldIconPulse: true,
-                    ));
-              },
-            );
             context.loaderOverlay.hide();
           },
           child: Icon(Icons.add_location_alt_rounded),

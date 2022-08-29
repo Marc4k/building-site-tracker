@@ -25,7 +25,7 @@ class BuildingSiteItem extends StatelessWidget {
           Row(
             children: [
               Image.asset(
-                "assets/image/schub.png",
+                "assets/image/schub2.png",
                 height: 25.h,
               ),
               SizedBox(

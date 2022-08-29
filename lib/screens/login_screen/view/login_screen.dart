@@ -4,6 +4,7 @@ import 'package:building_site_tracker/constants/styles.dart';
 import 'package:building_site_tracker/cubit/get_building_site_data_cubit.dart';
 import 'package:building_site_tracker/cubit/get_names_data_cubit.dart';
 import 'package:building_site_tracker/screens/building_sites/view/building_site_screen.dart';
+import 'package:building_site_tracker/screens/credit_screen/view/credit_screen.dart';
 import 'package:building_site_tracker/screens/homescreen.dart';
 import 'package:building_site_tracker/screens/login_screen/widget/login_screen_avatars.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -37,11 +38,22 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: EdgeInsets.all(24.r),
           child: Column(
             children: [
-              Center(
-                child: Text(
-                  "Mitarbeiter",
-                  style: heading1Style,
-                ),
+              Row(
+                children: [
+                  Text(
+                    "Mitarbeiter",
+                    style: heading1Style,
+                  ),
+                  Spacer(),
+                  IconButton(
+                      onPressed: () {
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (_) {
+                          return CreditScreen();
+                        }));
+                      },
+                      icon: Icon(Icons.info_outline))
+                ],
               ),
               SizedBox(height: 40.h),
               BlocBuilder<GetNamesDataCubit, List<String>>(

@@ -1,3 +1,6 @@
+import 'package:dartz/dartz.dart';
+
+import '../../error/failures.dart';
 import 'building_site_rep.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -24,13 +27,36 @@ class BuildingSiteImpl extends BuildingSiteRep {
   }
 
   @override
-  Future<void> createNewBuildingSite({required String name}) async {
-    final document =
-        FirebaseFirestore.instance.collection('buildingsite').doc();
+  Future<Either<String, Failure>> createNewBuildingSite(
+      {required String name}) async {
+    bool isSame = false;
 
-    await document.set({
-      "name": name,
+    await FirebaseFirestore.instance
+        .collection("buildingsite")
+        .where("name", isEqualTo: name)
+        .get()
+        .then((snapshot) {
+      snapshot.docs.forEach((element) {
+        //Object? data = element.data();
+        Map<String, dynamic> data = element.data() as Map<String, dynamic>;
+
+        isSame = true;
+      });
     });
+
+    if (isSame == false) {
+      final document =
+          FirebaseFirestore.instance.collection('buildingsite').doc();
+
+      await document.set({
+        "name": name,
+      });
+      String message = "$name wurde hinzugefügt.";
+      return left(message);
+    } else {
+      return right(BuildingSiteFailure(
+          errorMessage: "Diese Baustelle existiert bereits."));
+    }
   }
 
   @override

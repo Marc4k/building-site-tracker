@@ -64,7 +64,7 @@ class _UserSettingScreenState extends State<UserSettingScreen> {
 
                                 showFlash(
                                   context: context,
-                                  duration: const Duration(seconds: 4),
+                                  duration: const Duration(seconds: 3),
                                   builder: (context, controller) {
                                     return Flash.bar(
                                         backgroundColor: Colors.white,
@@ -79,8 +79,8 @@ class _UserSettingScreenState extends State<UserSettingScreen> {
                                           content: Text(
                                               "${names[index]} wurde gelöscht."),
                                           icon: Icon(
-                                            Icons.check,
-                                            color: Colors.green,
+                                            Icons.delete,
+                                            color: Colors.black,
                                             size: 24,
                                           ),
                                           shouldIconPulse: true,
@@ -154,7 +154,7 @@ class _UserSettingScreenState extends State<UserSettingScreen> {
               context.read<GetNamesDataCubit>().getNames();
               showFlash(
                 context: context,
-                duration: const Duration(seconds: 4),
+                duration: const Duration(seconds: 3),
                 builder: (context, controller) {
                   return Flash.bar(
                       backgroundColor: Colors.white,
@@ -179,7 +179,7 @@ class _UserSettingScreenState extends State<UserSettingScreen> {
 
               showFlash(
                 context: context,
-                duration: const Duration(seconds: 4),
+                duration: const Duration(seconds: 3),
                 builder: (context, controller) {
                   return Flash.bar(
                       backgroundColor: Colors.white,

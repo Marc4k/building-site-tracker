@@ -74,19 +74,12 @@ class _AllTimeScreenState extends State<AllTimeScreen> {
 
                               setState(() {
                                 this.valueProfil = value.toString();
+                                this.valueBuildingSite = null;
                               });
 
                               await UserAuthenticationImpl().signInUser(
                                   "${value.toString()}@tracker.at", "123456");
-
-                              if (this.valueBuildingSite != null) {
-                                String? nameBuildingSite =
-                                    this.valueBuildingSite;
-                                context
-                                    .read<GetTimeDataCubit>()
-                                    .getTimeData(nameBuildingSite!);
-                              }
-
+                              context.read<GetTimeDataCubit>().getTimeData("1");
                               context.loaderOverlay.hide();
                             }),
                       ),
@@ -97,6 +90,11 @@ class _AllTimeScreenState extends State<AllTimeScreen> {
               SizedBox(height: 20.h),
               BlocBuilder<GetBuildingSiteDataCubit, List<BuildingSiteModel>>(
                 builder: (context, buildingSites) {
+                  List<String> names = [];
+                  for (var i = 0; i < buildingSites.length; i++) {
+                    names.add(buildingSites[i].name);
+                  }
+
                   return Material(
                     elevation: 3,
                     color: CustomColors.yellow,
@@ -114,11 +112,11 @@ class _AllTimeScreenState extends State<AllTimeScreen> {
                               color: Colors.black,
                               fontWeight: FontWeight.w400),
                           value: this.valueBuildingSite,
-                          items: buildingSites.map(
+                          items: names.map(
                             (e) {
                               return DropdownMenuItem(
                                 value: e,
-                                child: Text(e.name),
+                                child: Text(e),
                               );
                             },
                           ).toList(),
@@ -127,10 +125,13 @@ class _AllTimeScreenState extends State<AllTimeScreen> {
 
                             setState(() {
                               this.valueBuildingSite = value.toString();
-                              context
-                                  .read<GetTimeDataCubit>()
-                                  .getTimeData(value.toString());
                             });
+                            final index1 = buildingSites.indexWhere(
+                                (element) => element.name == value.toString());
+                            context
+                                .read<GetTimeDataCubit>()
+                                .getTimeData(buildingSites[index1].id);
+
                             context.loaderOverlay.hide();
                           }),
                     ),

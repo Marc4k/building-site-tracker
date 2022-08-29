@@ -8,12 +8,7 @@ class UserAuthFailure extends Failure {
       : super(errorMessage: errorMessage);
 }
 
-class KidsDocumentFailure extends Failure {
-  KidsDocumentFailure({required String? errorMessage})
-      : super(errorMessage: errorMessage);
-}
-
-class SubscriptionFailure extends Failure {
-  SubscriptionFailure({required String? errorMessage})
+class BuildingSiteFailure extends Failure {
+  BuildingSiteFailure({required String? errorMessage})
       : super(errorMessage: errorMessage);
 }
