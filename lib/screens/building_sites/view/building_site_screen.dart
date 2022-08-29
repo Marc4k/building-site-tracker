@@ -31,7 +31,7 @@ TextEditingController _passwort = TextEditingController();
 
 class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
   bool isLocked = false;
-
+  bool klickedOnButton = false;
   @override
   Widget build(BuildContext context) {
     return LoaderOverlay(
@@ -249,6 +249,8 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
         floatingActionButton: FloatingActionButton(
           backgroundColor: CustomColors.yellow,
           onPressed: () async {
+            _name.clear();
+
             await showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -273,7 +275,11 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
                             style: ElevatedButton.styleFrom(
                                 shape: StadiumBorder(),
                                 primary: CustomColors.yellow),
-                            onPressed: () {},
+                            onPressed: () {
+                              klickedOnButton = true;
+
+                              Navigator.pop(context);
+                            },
                             child: Text("hinzufügen")),
                       )
                     ],
@@ -281,6 +287,9 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
                 });
             context.loaderOverlay.show();
             if (_name.text.isEmpty) {
+              return;
+            }
+            if (klickedOnButton == false) {
               return;
             }
             await BuildingSiteImpl().createNewBuildingSite(name: _name.text);
@@ -308,7 +317,6 @@ class _BuildingSiteScreenState extends State<BuildingSiteScreen> {
                     ));
               },
             );
-            _name.clear();
             context.loaderOverlay.hide();
           },
           child: Icon(Icons.add_location_alt_rounded),

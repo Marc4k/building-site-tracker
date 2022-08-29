@@ -1,6 +1,7 @@
 import 'package:building_site_tracker/constants/colors.dart';
 import 'package:building_site_tracker/constants/styles.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ShowAllTimesWidget extends StatelessWidget {
   const ShowAllTimesWidget(
@@ -8,7 +9,7 @@ class ShowAllTimesWidget extends StatelessWidget {
       : super(key: key);
   final String date;
   final String time;
-  final int hour;
+  final double hour;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -19,10 +20,11 @@ class ShowAllTimesWidget extends StatelessWidget {
         ),
         Spacer(),
         CircleAvatar(
+          radius: 23.r,
           backgroundColor: CustomColors.yellow,
           child: Text(
-            "${hour}h",
-            style: subheading1Style,
+            double.parse((hour).toStringAsFixed(1)).toString(),
+            style: subheading2Style,
           ),
         ),
         Spacer(),

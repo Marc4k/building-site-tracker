@@ -157,7 +157,8 @@ class TimeTrackerImpl extends TimeTrackerRep {
 
         Duration diff = stopTime.difference(startTime);
 
-        int time = diff.inHours;
+        int time = diff.inMinutes;
+        double differenceInHour = time / 60;
 
         timeData.add(TimeModel(
             startTime: startTime,
@@ -166,9 +167,28 @@ class TimeTrackerImpl extends TimeTrackerRep {
             buildingSiteId: buildingSiteId,
             date: date,
             startEndTime: "$startTimeFromatted-$stopTimeFormatted",
-            hours: time));
+            hours: differenceInHour));
       });
     });
+
+    timeData.sort((b, a) => a.startTime.compareTo(b.startTime));
+    if (timeData.length >= 1) {
+      double summe = 0;
+
+      for (var i = 0; i < timeData.length; i++) {
+        summe = summe + timeData[i].hours;
+      }
+
+      timeData.add(TimeModel(
+          startTime: DateTime.now(),
+          stopTime: DateTime.now(),
+          id: "++Summe++",
+          buildingSiteId: buildingSiteId,
+          date: "++Summe++",
+          startEndTime: "++Summe++",
+          hours: summe));
+    }
+    ;
 
     return timeData;
   }

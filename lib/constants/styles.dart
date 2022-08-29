@@ -15,6 +15,12 @@ TextStyle subheading1Style = TextStyle(
     color: CustomColors.textColor,
     fontFamily: "Lato");
 
+TextStyle subheading2Style = TextStyle(
+    fontSize: 20.sp,
+    fontWeight: FontWeight.w400,
+    color: CustomColors.textColor,
+    fontFamily: "Lato");
+
 TextStyle bodyStyle = TextStyle(
     fontSize: 16.sp,
     fontWeight: FontWeight.w300,

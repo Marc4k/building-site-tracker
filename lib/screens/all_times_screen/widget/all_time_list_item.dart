@@ -11,13 +11,15 @@ class AllTimeListItem extends StatelessWidget {
       required this.time,
       required this.hour,
       required this.onTapDelete,
-      required this.onTapEdit})
+      required this.onTapEdit,
+      required this.isDivider})
       : super(key: key);
   final String date;
   final String time;
-  final int hour;
+  final double hour;
   final VoidCallback onTapDelete;
   final VoidCallback onTapEdit;
+  final bool isDivider;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -31,10 +33,11 @@ class AllTimeListItem extends StatelessWidget {
             ),
             Spacer(),
             CircleAvatar(
+              radius: 22.r,
               backgroundColor: CustomColors.yellow,
               child: Text(
-                "${hour}h",
-                style: subheading1Style,
+                double.parse((hour).toStringAsFixed(1)).toString(),
+                style: subheading2Style,
               ),
             ),
             Spacer(),
@@ -70,7 +73,7 @@ class AllTimeListItem extends StatelessWidget {
           ],
         ),
         SizedBox(height: 10.h),
-        Divider(thickness: 1),
+        isDivider ? Divider(thickness: 1) : Container(),
       ],
     );
   }

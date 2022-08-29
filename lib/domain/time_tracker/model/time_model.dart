@@ -4,7 +4,7 @@ class TimeModel {
   final String buildingSiteId;
   final String date;
   final String startEndTime;
-  final int hours;
+  final double hours;
   final String id;
   final DateTime startTime;
   final DateTime stopTime;

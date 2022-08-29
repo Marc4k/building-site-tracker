@@ -124,7 +124,12 @@ class _TimeTrackerSiteState extends State<TimeTrackerSite> {
                     final hours = twoDigitsGang(time.inHours);
                     final minutes = twoDigitsGang(time.inMinutes.remainder(60));
                     final seconds = twoDigitsGang(time.inSeconds.remainder(60));
-                    final valueMinutes = (1 / 60) * time.inMinutes;
+
+                    double valueProgressBar =
+                        (1 / 60) * time.inMinutes.remainder(60);
+
+                    valueProgressBar = valueProgressBar +
+                        ((1 / 60) * time.inSeconds.remainder(60) / 100);
 
                     // print(valueseconds);
 
@@ -141,7 +146,7 @@ class _TimeTrackerSiteState extends State<TimeTrackerSite> {
                                 color: CustomColors.yellow,
                                 backgroundColor: CustomColors.grey,
                                 strokeWidth: 15,
-                                value: valueMinutes,
+                                value: valueProgressBar,
                               ),
                             ),
                           ),
@@ -194,12 +199,13 @@ class _TimeTrackerSiteState extends State<TimeTrackerSite> {
                                   .setTimer(Duration(seconds: 0));
 
                               context.read<StartStopCubit>().setStartActive();
-                              context
-                                  .read<GetTimeDataCubit>()
-                                  .getTimeData(widget.name);
 
                               await TimeTrackerImpl()
                                   .stopTimer(name: widget.name);
+
+                              context
+                                  .read<GetTimeDataCubit>()
+                                  .getTimeData(widget.name);
                             }
                           },
                           child: Text("Stop")),
@@ -216,6 +222,12 @@ class _TimeTrackerSiteState extends State<TimeTrackerSite> {
                       child: ListView.builder(
                     itemCount: timeData.length,
                     itemBuilder: (context, index) {
+                      if (timeData[index].id == "++Summe++" &&
+                          timeData[index].date == "++Summe++" &&
+                          timeData[index].startEndTime == "++Summe++") {
+                        return Container();
+                      }
+
                       return Column(
                         children: [
                           SizedBox(height: 10.h),

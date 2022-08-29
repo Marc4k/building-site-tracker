@@ -143,10 +143,53 @@ class _AllTimeScreenState extends State<AllTimeScreen> {
                     child: ListView.builder(
                       itemCount: timeData.length,
                       itemBuilder: (context, index) {
+                        if (timeData[index].id == "++Summe++" &&
+                            timeData[index].date == "++Summe++" &&
+                            timeData[index].startEndTime == "++Summe++") {
+                          return Column(
+                            children: [
+                              SizedBox(height: 10.h),
+                              Divider(
+                                thickness: 1,
+                                color: Colors.black,
+                              ),
+                              SizedBox(height: 5.h),
+                              IntrinsicHeight(
+                                child: Stack(
+                                  children: [
+                                    Align(
+                                      child: CircleAvatar(
+                                        backgroundColor: CustomColors.yellow,
+                                        radius: 28.r,
+                                        child: Text(
+                                          double.parse((timeData[index].hours)
+                                                  .toStringAsFixed(1))
+                                              .toString(),
+                                          style: subheading2Style,
+                                        ),
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Positioned(
+                                          left: 0,
+                                          child: Text(
+                                            'Gesamt:',
+                                            style: bodyStyle,
+                                          )),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+
                         return Column(
                           children: [
                             SizedBox(height: 10.h),
                             AllTimeListItem(
+                                isDivider: index != timeData.length - 2,
                                 onTapDelete: () async {
                                   context.loaderOverlay.show();
 
