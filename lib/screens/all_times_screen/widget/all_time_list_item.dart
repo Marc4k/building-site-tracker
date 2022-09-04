@@ -12,14 +12,18 @@ class AllTimeListItem extends StatelessWidget {
       required this.hour,
       required this.onTapDelete,
       required this.onTapEdit,
-      required this.isDivider})
+      required this.isDivider,
+      required this.onMessageTap,
+      required this.isMessage})
       : super(key: key);
   final String date;
   final String time;
   final double hour;
   final VoidCallback onTapDelete;
   final VoidCallback onTapEdit;
+  final VoidCallback onMessageTap;
   final bool isDivider;
+  final bool isMessage;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -46,21 +50,38 @@ class AllTimeListItem extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    GestureDetector(
-                      onTap: onTapEdit,
-                      child: Icon(
+                    IconButton(
+                      padding: const EdgeInsets.all(0),
+                      constraints: BoxConstraints(),
+                      onPressed: onTapEdit,
+                      icon: Icon(
                         Icons.edit,
+                        size: 20.r,
+                      ),
+                    ),
+                    SizedBox(width: 10.w),
+                    IconButton(
+                      padding: const EdgeInsets.all(0),
+                      constraints: BoxConstraints(),
+                      onPressed: onTapDelete,
+                      icon: Icon(
+                        Icons.delete,
                         size: 17.r,
                       ),
                     ),
                     SizedBox(width: 10.w),
-                    GestureDetector(
-                      onTap: onTapDelete,
-                      child: Icon(
-                        Icons.delete,
-                        size: 17.r,
+                    Visibility(
+                      visible: isMessage,
+                      child: IconButton(
+                        padding: const EdgeInsets.all(0),
+                        constraints: BoxConstraints(),
+                        onPressed: onMessageTap,
+                        icon: Icon(
+                          Icons.message,
+                          size: 17.r,
+                        ),
                       ),
-                    )
+                    ),
                   ],
                 ),
                 SizedBox(height: 2.w),

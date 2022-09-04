@@ -19,12 +19,13 @@ class TimeTrackerImpl extends TimeTrackerRep {
       "buildingSiteId": buildingSiteId,
       "startTime": now,
       "stopTime": now,
-      "isFinished": false
+      "isFinished": false,
+      "message": ""
     });
   }
 
   @override
-  Future<void> stopTimer({required String buildingSiteId}) async {
+  Future<String> stopTimer({required String buildingSiteId}) async {
     DateTime now = DateTime.now();
     String id = "";
     final FirebaseAuth auth = FirebaseAuth.instance;
@@ -47,6 +48,8 @@ class TimeTrackerImpl extends TimeTrackerRep {
       });
     });
     await collection.doc(id).update({"isFinished": true, "stopTime": now});
+
+    return id;
   }
 
   @override
@@ -124,6 +127,7 @@ class TimeTrackerImpl extends TimeTrackerRep {
             startTime: startTime,
             stopTime: stopTime,
             id: element.id,
+            message: data['message'],
             buildingSiteId: buildingSiteId,
             date: date,
             startEndTime: "$startTimeFromatted-$stopTimeFormatted",
@@ -140,6 +144,7 @@ class TimeTrackerImpl extends TimeTrackerRep {
       }
 
       timeData.add(TimeModel(
+          message: "",
           startTime: DateTime.now(),
           stopTime: DateTime.now(),
           id: "++Summe++",
@@ -148,7 +153,6 @@ class TimeTrackerImpl extends TimeTrackerRep {
           startEndTime: "++Summe++",
           hours: summe));
     }
-    ;
 
     return timeData;
   }
@@ -170,5 +174,12 @@ class TimeTrackerImpl extends TimeTrackerRep {
     await collection
         .doc(id)
         .update({"startTime": newStart, "stopTime": newEnd});
+  }
+
+  @override
+  Future<void> setMessage({required String message, required String id}) async {
+    var collection = FirebaseFirestore.instance.collection('time');
+
+    await collection.doc(id).update({"message": message});
   }
 }

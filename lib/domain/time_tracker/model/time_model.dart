@@ -8,9 +8,11 @@ class TimeModel {
   final String id;
   final DateTime startTime;
   final DateTime stopTime;
+  final String message;
 
   TimeModel(
       {required this.buildingSiteId,
+      required this.message,
       required this.date,
       required this.startEndTime,
       required this.hours,

@@ -148,10 +148,12 @@ class _UserSettingScreenState extends State<UserSettingScreen> {
 
             await UserAuthenticationImpl()
                 .signInUser("mathias@tracker.at", "123456");
+            context.loaderOverlay.hide();
 
             userData.fold((userData) {
-              context.loaderOverlay.hide();
               context.read<GetNamesDataCubit>().getNames();
+              context.loaderOverlay.hide();
+
               showFlash(
                 context: context,
                 duration: const Duration(seconds: 3),
@@ -174,6 +176,7 @@ class _UserSettingScreenState extends State<UserSettingScreen> {
                       ));
                 },
               );
+              context.loaderOverlay.hide();
             }, (failure) {
               context.loaderOverlay.hide();
 

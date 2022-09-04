@@ -185,98 +185,144 @@ class _AllTimeScreenState extends State<AllTimeScreen> {
                               ),
                             ],
                           );
+                        } else {
+                          return Column(
+                            children: [
+                              SizedBox(height: 10.h),
+                              AllTimeListItem(
+                                  isMessage: timeData[index].message != "",
+                                  onMessageTap: () async {
+                                    await showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text('Notiz'),
+                                            content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Text(timeData[index].message)
+                                              ],
+                                            ),
+                                            actions: <Widget>[
+                                              Center(
+                                                child: ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                            shape:
+                                                                StadiumBorder(),
+                                                            primary:
+                                                                CustomColors
+                                                                    .yellow),
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text("schließen")),
+                                              )
+                                            ],
+                                          );
+                                        });
+
+                                    context
+                                        .read<GetBuildingSiteDataCubit>()
+                                        .getNames();
+                                  },
+                                  isDivider: index != timeData.length - 2,
+                                  onTapDelete: () async {
+                                    context.loaderOverlay.show();
+
+                                    await TimeTrackerImpl()
+                                        .deleteTime(id: timeData[index].id);
+                                    context.loaderOverlay.hide();
+
+                                    String? nameBuildingSite =
+                                        this.valueBuildingSite;
+                                    context
+                                        .read<GetTimeDataCubit>()
+                                        .getTimeData(nameBuildingSite!);
+                                  },
+                                  onTapEdit: () async {
+                                    TimeRange result =
+                                        await showTimeRangePicker(
+                                            context: context,
+                                            fromText: "Start",
+                                            toText: "Ende",
+                                            strokeColor: CustomColors.yellow,
+                                            handlerColor: CustomColors.grey,
+                                            selectedColor: CustomColors.yellow,
+                                            start: TimeOfDay(
+                                                hour: timeData[index]
+                                                    .startTime
+                                                    .hour,
+                                                minute: timeData[index]
+                                                    .startTime
+                                                    .minute),
+                                            end: TimeOfDay(
+                                                hour: timeData[index]
+                                                    .stopTime
+                                                    .hour,
+                                                minute: timeData[index]
+                                                    .stopTime
+                                                    .minute),
+                                            labels: [
+                                              "00:00",
+                                              "03:00",
+                                              "06:00",
+                                              "09:00",
+                                              "12:00",
+                                              "15:00",
+                                              "18:00",
+                                              "21:00"
+                                            ].asMap().entries.map((e) {
+                                              return ClockLabel.fromIndex(
+                                                  idx: e.key,
+                                                  length: 8,
+                                                  text: e.value);
+                                            }).toList(),
+                                            labelOffset: -30,
+                                            ticks: 8,
+                                            ticksColor: CustomColors.yellow,
+                                            ticksWidth: 2,
+                                            interval: Duration(minutes: 15));
+
+                                    context.loaderOverlay.show();
+
+                                    DateTime newStart =
+                                        timeData[index].startTime;
+                                    DateTime newEnd = timeData[index].startTime;
+
+                                    newStart = DateTime(
+                                        newStart.year,
+                                        newStart.month,
+                                        newStart.day,
+                                        result.startTime.hour,
+                                        result.startTime.minute);
+                                    newEnd = DateTime(
+                                        newStart.year,
+                                        newStart.month,
+                                        newStart.day,
+                                        result.endTime.hour,
+                                        result.endTime.minute);
+
+                                    await TimeTrackerImpl().editTime(
+                                        id: timeData[index].id,
+                                        newStart: newStart,
+                                        newEnd: newEnd);
+                                    context.loaderOverlay.hide();
+
+                                    String? nameBuildingSite =
+                                        this.valueBuildingSite;
+                                    context
+                                        .read<GetTimeDataCubit>()
+                                        .getTimeData(nameBuildingSite!);
+                                  },
+                                  date: timeData[index].date,
+                                  time: timeData[index].startEndTime,
+                                  hour: timeData[index].hours),
+                            ],
+                          );
                         }
-
-                        return Column(
-                          children: [
-                            SizedBox(height: 10.h),
-                            AllTimeListItem(
-                                isDivider: index != timeData.length - 2,
-                                onTapDelete: () async {
-                                  context.loaderOverlay.show();
-
-                                  await TimeTrackerImpl()
-                                      .deleteTime(id: timeData[index].id);
-                                  context.loaderOverlay.hide();
-
-                                  String? nameBuildingSite =
-                                      this.valueBuildingSite;
-                                  context
-                                      .read<GetTimeDataCubit>()
-                                      .getTimeData(nameBuildingSite!);
-                                },
-                                onTapEdit: () async {
-                                  TimeRange result = await showTimeRangePicker(
-                                      context: context,
-                                      fromText: "Start",
-                                      toText: "Ende",
-                                      strokeColor: CustomColors.yellow,
-                                      handlerColor: CustomColors.grey,
-                                      selectedColor: CustomColors.yellow,
-                                      start: TimeOfDay(
-                                          hour: timeData[index].startTime.hour,
-                                          minute:
-                                              timeData[index].startTime.minute),
-                                      end: TimeOfDay(
-                                          hour: timeData[index].stopTime.hour,
-                                          minute:
-                                              timeData[index].stopTime.minute),
-                                      labels: [
-                                        "00:00",
-                                        "03:00",
-                                        "06:00",
-                                        "09:00",
-                                        "12:00",
-                                        "15:00",
-                                        "18:00",
-                                        "21:00"
-                                      ].asMap().entries.map((e) {
-                                        return ClockLabel.fromIndex(
-                                            idx: e.key,
-                                            length: 8,
-                                            text: e.value);
-                                      }).toList(),
-                                      labelOffset: -30,
-                                      ticks: 8,
-                                      ticksColor: CustomColors.yellow,
-                                      ticksWidth: 2,
-                                      interval: Duration(minutes: 15));
-
-                                  context.loaderOverlay.show();
-
-                                  DateTime newStart = timeData[index].startTime;
-                                  DateTime newEnd = timeData[index].startTime;
-
-                                  newStart = DateTime(
-                                      newStart.year,
-                                      newStart.month,
-                                      newStart.day,
-                                      result.startTime.hour,
-                                      result.startTime.minute);
-                                  newEnd = DateTime(
-                                      newStart.year,
-                                      newStart.month,
-                                      newStart.day,
-                                      result.endTime.hour,
-                                      result.endTime.minute);
-
-                                  await TimeTrackerImpl().editTime(
-                                      id: timeData[index].id,
-                                      newStart: newStart,
-                                      newEnd: newEnd);
-                                  context.loaderOverlay.hide();
-
-                                  String? nameBuildingSite =
-                                      this.valueBuildingSite;
-                                  context
-                                      .read<GetTimeDataCubit>()
-                                      .getTimeData(nameBuildingSite!);
-                                },
-                                date: timeData[index].date,
-                                time: timeData[index].startEndTime,
-                                hour: timeData[index].hours),
-                          ],
-                        );
                       },
                     ),
                   );

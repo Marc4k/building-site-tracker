@@ -109,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   }
                 },
               ),
-              Image.asset("assets/image/building.jpg")
+              Image.asset("assets/image/building.jpeg")
             ],
           ),
         )),

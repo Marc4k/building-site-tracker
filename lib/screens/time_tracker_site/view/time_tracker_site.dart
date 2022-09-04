@@ -1,5 +1,8 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flash/flash.dart';
+
 import '../../../constants/colors.dart';
 import '../../../cubit/get_time_data_cubit.dart';
 import '../../../cubit/start_stop_cubit.dart';
@@ -27,6 +30,8 @@ class TimeTrackerSite extends StatefulWidget {
 
 class _TimeTrackerSiteState extends State<TimeTrackerSite> {
   bool canStart = true;
+  TextEditingController message = TextEditingController();
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -215,8 +220,85 @@ class _TimeTrackerSiteState extends State<TimeTrackerSite> {
 
                               context.read<StartStopCubit>().setStartActive();
 
-                              await TimeTrackerImpl().stopTimer(
+                              String id = await TimeTrackerImpl().stopTimer(
                                   buildingSiteId: widget.buildingSiteId);
+
+                              await showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Notiz'),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          TextFormField(
+                                            controller: message,
+                                            minLines: 3,
+                                            maxLines: 3,
+                                            decoration: InputDecoration(
+                                              hintText: "Nachricht",
+                                              labelText: "Nachricht",
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      actions: <Widget>[
+                                        Center(
+                                          child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                  shape: StadiumBorder(),
+                                                  primary: CustomColors.yellow),
+                                              onPressed: () async {
+                                                if (message.text.isNotEmpty) {
+                                                  await TimeTrackerImpl()
+                                                      .setMessage(
+                                                          message: message.text,
+                                                          id: id);
+                                                  Navigator.pop(context);
+                                                  showFlash(
+                                                    context: context,
+                                                    duration: const Duration(
+                                                        seconds: 3),
+                                                    builder:
+                                                        (context, controller) {
+                                                      return Flash.bar(
+                                                          backgroundColor:
+                                                              Colors.white,
+                                                          enableVerticalDrag:
+                                                              true,
+                                                          horizontalDismissDirection:
+                                                              HorizontalDismissDirection
+                                                                  .startToEnd,
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          8)),
+                                                          controller:
+                                                              controller,
+                                                          child: FlashBar(
+                                                            content: Text(
+                                                                "Notiz wurde gespeichert"),
+                                                            icon: Icon(
+                                                              Icons.check,
+                                                              color:
+                                                                  Colors.green,
+                                                              size: 24,
+                                                            ),
+                                                            shouldIconPulse:
+                                                                true,
+                                                          ));
+                                                    },
+                                                  );
+                                                }
+                                              },
+                                              child: Text("Speichern")),
+                                        )
+                                      ],
+                                    );
+                                  });
 
                               context
                                   .read<GetTimeDataCubit>()

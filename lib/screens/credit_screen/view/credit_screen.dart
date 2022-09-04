@@ -50,9 +50,28 @@ class CreditScreen extends StatelessWidget {
               ),
             ),
             Text("on Freepik"),
+            SizedBox(height: 25.h),
+
+            Text("Illustration by Ornella Pagliaruolo"),
+            Text("Animation by Beló Qu"),
+
+            GestureDetector(
+              onTap: () {
+                final Uri _url = Uri.parse(
+                    'https://www.behance.net/gallery/72969113/Animated-buildings');
+                launchUrl(_url);
+              },
+              child: Text(
+                "https://www.behance.net/gallery/72969113/Animated-buildings",
+                style: TextStyle(color: Colors.blue),
+              ),
+            ),
+            Text("on behance"),
             Spacer(),
             Text("Made in Austria"),
             Text("by Marc"),
+
+//
           ],
         ),
       )),
