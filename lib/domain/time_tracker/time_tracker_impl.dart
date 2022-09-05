@@ -136,23 +136,6 @@ class TimeTrackerImpl extends TimeTrackerRep {
     });
 
     timeData.sort((b, a) => a.startTime.compareTo(b.startTime));
-    if (timeData.length >= 1) {
-      double summe = 0;
-
-      for (var i = 0; i < timeData.length; i++) {
-        summe = summe + timeData[i].hours;
-      }
-
-      timeData.add(TimeModel(
-          message: "",
-          startTime: DateTime.now(),
-          stopTime: DateTime.now(),
-          id: "++Summe++",
-          buildingSiteId: buildingSiteId,
-          date: "++Summe++",
-          startEndTime: "++Summe++",
-          hours: summe));
-    }
 
     return timeData;
   }

@@ -71,7 +71,6 @@ class AllTimeListItem extends StatelessWidget {
                     ),
                     SizedBox(width: 10.w),
                     Visibility(
-                      visible: isMessage,
                       child: IconButton(
                         padding: const EdgeInsets.all(0),
                         constraints: BoxConstraints(),
@@ -79,6 +78,9 @@ class AllTimeListItem extends StatelessWidget {
                         icon: Icon(
                           Icons.message,
                           size: 17.r,
+                          color: isMessage
+                              ? Colors.black
+                              : Colors.black.withOpacity(0.2),
                         ),
                       ),
                     ),
